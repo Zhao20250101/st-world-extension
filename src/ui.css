@@ -1,9 +1,12 @@
 /* 世界书灯 LoreLamp —— 面板样式 */
 #LoreLampFab {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 99999;
+  right: 8px;
+  top: 50%;
+  bottom: auto;
+  left: auto;
+  transform: translateY(-50%);
+  z-index: 1000000;
   width: 60px;
   height: 60px;
   touch-action: none;
@@ -153,17 +156,8 @@
 .lorelamp-preview-entry .lorelamp-content { white-space: pre-wrap; color: #adbac7; }
 #lorelamp-preview-actions { margin-top: 8px; }
 
-/* 移动端：悬浮球放在右侧中间，避免被底部输入栏遮挡 */
+/* 移动端：面板自适应宽度 */
 @media (max-width: 768px) {
-  #LoreLampFab {
-    right: 6px;
-    top: 50%;
-    bottom: auto;
-    left: auto;
-    transform: translateY(-50%);
-    z-index: 1000000;
-  }
-  #LoreLampFab.lorelamp-panel-placeholder { display: none; }
   .lorelamp-panel {
     width: 92vw;
     max-width: 400px;
