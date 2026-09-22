@@ -156,8 +156,9 @@
 /* 移动端：把悬浮球上移，避免被底部输入栏遮挡 */
 @media (max-width: 768px) {
   #LoreLampFab {
-    right: 16px;
-    bottom: 90px;
+    right: 14px;
+    bottom: 150px;
+    z-index: 1000000;
   }
   #LoreLampFab.lorelamp-panel-placeholder { display: none; }
 }
