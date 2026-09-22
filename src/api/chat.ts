@@ -2,15 +2,7 @@
 // “临时”指的是写入当前聊天的聊天世界书（chat lorebook），它绑定在 chat_metadata 上，
 // 开启新的聊天（新 chat 文件）即不会继承，从而满足“仅当前聊天生效，新聊天清空”。
 
-import {
-  chat,
-  chat_metadata,
-  getCurrentChatId,
-  name1,
-  name2,
-  saveMetadata,
-} from '@sillytavern/script';
-import { createNewWorldInfo, METADATA_KEY, world_names } from '@sillytavern/scripts/world-info';
+import { ST } from '../st';
 import { addEntries, loadEntries, worldbookExists } from './worldbook';
 import { parseFloorRange } from '../logic';
 import type { LoreEntry } from '../types';
@@ -27,12 +19,12 @@ export interface FloorSegment {
 /** 读取当前聊天在楼层范围内的对话文本（用于提炼）。 */
 export function getFloorSegment(start: number, end: number): string {
   const lines: string[] = [];
-  for (let i = start; i <= end && i < chat.length; i++) {
-    const mes = chat[i];
+  for (let i = start; i <= end && i < ST.chat.length; i++) {
+    const mes = ST.chat[i];
     if (!mes) {
       continue;
     }
-    const who = mes.is_user ? name1 : mes.is_system ? '系统' : mes.name || name2;
+    const who = mes.is_user ? ST.name1 : mes.is_system ? '系统' : mes.name || ST.name2;
     const body = mes.mes != null ? String(mes.mes).trim() : '';
     if (!body && !mes.is_user && !mes.is_system) {
       continue;
@@ -44,12 +36,12 @@ export function getFloorSegment(start: number, end: number): string {
 
 /** 当前聊天最大楼层索引 */
 export function maxFloorIndex(): number {
-  return chat.length - 1;
+  return ST.chat.length - 1;
 }
 
 /** 当前是否已打开聊天 */
 export function hasChat(): boolean {
-  return getCurrentChatId() !== undefined && chat.length > 0;
+  return ST.getCurrentChatId() !== undefined && ST.chat.length > 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -58,8 +50,8 @@ export function hasChat(): boolean {
 
 /** 读取当前聊天的聊天世界书名称；没有则返回 null */
 export function getChatLorebook(): string | null {
-  const stored = chat_metadata?.[METADATA_KEY];
-  if (typeof stored === 'string' && world_names.includes(stored)) {
+  const stored = ST.chat_metadata?.[ST.METADATA_KEY];
+  if (typeof stored === 'string' && ST.world_names.includes(stored)) {
     return stored;
   }
   return null;
@@ -68,11 +60,11 @@ export function getChatLorebook(): string | null {
 /** 为当前聊天设置聊天世界书名称 */
 async function bindChatLorebook(name: string | null): Promise<void> {
   if (name === null) {
-    delete chat_metadata[METADATA_KEY];
+    delete ST.chat_metadata[ST.METADATA_KEY];
   } else {
-    chat_metadata[METADATA_KEY] = name;
+    ST.chat_metadata[ST.METADATA_KEY] = name;
   }
-  await saveMetadata();
+  await ST.saveMetadata();
 }
 
 /** 获取当前聊天的聊天世界书，不存在则自动创建一本绑定的（临时库）。 */
@@ -81,14 +73,14 @@ export async function getOrCreateChatLorebook(): Promise<string> {
   if (existing) {
     return existing;
   }
-  const chatId = getCurrentChatId() ?? 'chat';
+  const chatId = ST.getCurrentChatId() ?? 'chat';
   const base = `临时库_${String(chatId).replace(/[^a-zA-Z0-9\u4e00-\u9fa5_-]/g, '_').slice(0, 60)}`;
   let name = base;
   let n = 1;
   while (worldbookExists(name)) {
     name = `${base}_${n++}`;
   }
-  await createNewWorldInfo(name, { interactive: false });
+  await ST.createNewWorldInfo(name, { interactive: false });
   await bindChatLorebook(name);
   return name;
 }

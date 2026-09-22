@@ -1,12 +1,17 @@
 // 世界书灯 LoreLamp —— 插件入口。
-import './ui.css';
-import { eventSource, event_types } from '@sillytavern/script';
+import cssText from './ui.css?inline';
+import { ST } from './st';
 import { initUI, refreshContext } from './ui';
 
-eventSource.on(event_types.APP_READY, initUI);
+// 内联注入样式，使单文件即可经 CDN 加载并带样式。
+const styleEl = document.createElement('style');
+styleEl.textContent = cssText;
+document.head.appendChild(styleEl);
+
+ST.eventSource.on(ST.event_types.APP_READY, initUI);
 // 切换/载入聊天后刷新楼层与临时库提示
-eventSource.on('chatLoaded', refreshContext);
-eventSource.on(event_types.CHAT_CHANGED, refreshContext);
+ST.eventSource.on('chatLoaded', refreshContext);
+ST.eventSource.on(ST.event_types.CHAT_CHANGED, refreshContext);
 
 const SILENT_RETRY_MS = 800;
 async function tryInitEarly(): Promise<void> {

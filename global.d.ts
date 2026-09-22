@@ -6,3 +6,8 @@ declare const toastr: {
   warning: (msg?: string, title?: string, opts?: object) => void;
   error: (msg?: string, title?: string, opts?: object) => void;
 };
+
+declare module '*.css?inline' {
+  const css: string;
+  export default css;
+}

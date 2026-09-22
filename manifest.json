@@ -4,7 +4,6 @@
   "requires": [],
   "optional": [],
   "js": "dist/index.js",
-  "css": "dist/index.css",
   "author": "LoreLamp",
   "version": "1.0.0",
   "homePage": "",

@@ -2,9 +2,7 @@
 // 再把它作为附加世界书绑定到当前角色卡上（存在 world_info.charLore 中），并在需要时
 // 一并加入全局启用。这样无论开启多少个新聊天，只要还是这张卡，库始终生效。
 
-import { saveCharacterDebounced, saveSettingsDebounced, this_chid } from '@sillytavern/script';
-import { world_info } from '@sillytavern/scripts/world-info';
-import { getCharaFilename } from '@sillytavern/scripts/utils';
+import { ST } from '../st';
 import { addEntries, createWorldbook, globalEnabledWorldbooks, setGlobalSelection, worldbookExists } from './worldbook';
 
 /** 默认永久库名称 */
@@ -16,7 +14,7 @@ export function defaultPersistentBookName(): string {
 /** 当前角色卡文件名（无扩展名）；无角色卡时返回空 */
 export function getCurrentCharFilename(): string {
   try {
-    return getCharaFilename(this_chid) ?? '';
+    return ST.getCharaFilename(ST.this_chid) ?? '';
   } catch {
     return '';
   }
@@ -28,7 +26,7 @@ export function getCharAdditionalWorldbooks(): string[] {
   if (!filename) {
     return [];
   }
-  const charLore = (world_info as unknown as { charLore?: { name: string; extraBooks: string[] }[] }).charLore ?? [];
+  const charLore = (ST.world_info as unknown as { charLore?: { name: string; extraBooks: string[] }[] }).charLore ?? [];
   return charLore.find((e) => e.name === filename)?.extraBooks ?? [];
 }
 
@@ -48,8 +46,8 @@ function attachToCharacter(bookName: string): void {
   if (!filename) {
     return; // 没有角色卡时只保证库存在，不绑定
   }
-  const charLore = (world_info as unknown as { charLore?: { name: string; extraBooks: string[] }[] }).charLore ??
-    ((world_info as unknown as { charLore: { name: string; extraBooks: string[] }[] }).charLore = []);
+  const wi = ST.world_info as unknown as { charLore: { name: string; extraBooks: string[] }[] };
+  const charLore = wi.charLore ?? (wi.charLore = []);
   const entry = charLore.find((e) => e.name === filename);
   if (entry) {
     if (!entry.extraBooks.includes(bookName)) {
@@ -58,8 +56,8 @@ function attachToCharacter(bookName: string): void {
   } else {
     charLore.push({ name: filename, extraBooks: [bookName] });
   }
-  saveCharacterDebounced();
-  saveSettingsDebounced();
+  ST.saveCharacterDebounced();
+  ST.saveSettingsDebounced();
 }
 
 /** 把永久库加入全局启用清单（可选） */

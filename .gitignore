@@ -1,3 +1,4 @@
-node_modules/
+﻿node_modules/
+dist/index.css
 dist/index.js.map
 *.log
