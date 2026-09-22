@@ -1,0 +1,19 @@
+{
+  "name": "tavern-lorelamp",
+  "version": "1.0.0",
+  "description": "世界书灯 LoreLamp —— SillyTavern 世界书工具箱：拉取世界书并识别蓝灯/绿灯条目、按楼层区间按方向（人物/世界观）提炼信息并写入世界书、支持临时（仅当前聊天）与永久（跨聊天）写入。",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "watch": "vite build --watch --mode development"
+  },
+  "devDependencies": {
+    "@types/jquery": "^4.0.1",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true
+  }
+}
